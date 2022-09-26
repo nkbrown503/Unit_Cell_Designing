@@ -34,11 +34,11 @@ class Agent:
         self.Noise_Decay=Noise_Decay
         self.Min_Noise=0.005
         self.Trial_Num=Type
-        self.actor = ActorNetwork(n_actions=n_actions, name='actor_'+self.Trial_Num)
-        self.critic = CriticNetwork(name='critic_'+self.Trial_Num)
+        self.actor = ActorNetwork(n_actions=n_actions, name='actor_{}_'.format(TN)+self.Trial_Num)
+        self.critic = CriticNetwork(name='critic_{}_'.format(TN)+self.Trial_Num)
         self.target_actor = ActorNetwork(n_actions=n_actions,
-                                         name='target_actor_'+self.Trial_Num)
-        self.target_critic = CriticNetwork(name='target_critic_'+self.Trial_Num)
+                                         name='target_actor_{}_'.format(TN)+self.Trial_Num)
+        self.target_critic = CriticNetwork(name='target_critic_{}_'.format(TN)+self.Trial_Num)
 
         self.actor.compile(optimizer=Adam(learning_rate=alpha))
         self.critic.compile(optimizer=Adam(learning_rate=beta))
