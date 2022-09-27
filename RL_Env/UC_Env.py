@@ -186,11 +186,7 @@ class UC_Env(Env):
             #---------------------------------------------------
                 
             #Get the FD curve depending on the desired unit cell 
-            if Type=='Compression':
-                self.Desired_Force=np.load('Compression_Force_Values.npy')[self.UC-1,:]
-            elif Type=='Tension':
-                self.Desired_Force=np.load('Tension_Force_Values.npy')[self.UC-1,:]
-
+            self.Desired_Force=self.Desired_Force_Set[self.UC-1,:]
 
             if Test==False:
                 #Add noise to the desired FD curve during training 
