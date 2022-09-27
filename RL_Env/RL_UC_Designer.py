@@ -20,7 +20,7 @@ import wandb
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--learning-rate",type=float,default=1e-4)
+    parser.add_argument("--learning_rate",type=float,default=5e-4)
     parser.add_argument("--gamma",type=float,default=0.99)
     parser.add_argument("--max_noise",type=float,default=0.2)
     parser.add_argument("--noise_decay",type=float,default=5e-5)
@@ -37,12 +37,12 @@ figure_file = 'plots/UC_RL_Training.png'
 
 best_score = -10
 score_history = []
-Type='Compression'  #Change to either Tension or Compression depending on load type
+Type='Tension'  #Change to either Tension or Compression depending on load type
 
 
 Test=True #If Test=False then the RL agent will be trained from scratch
 env = UC_Env(Type) #Call the RL environment 
-agent = Agent(input_dims=(59,),Type=Type,alpha=5e-4,beta=5e-4,gamma=args.gamma,
+agent = Agent(input_dims=(59,),Type=Type,alpha=args.learning_rate,beta=args.learning_rate,gamma=args.gamma,
               env=env,Start_Noise=args.max_noise,Noise_Decay=args.noise_decay,n_actions=7,TN=args.Trial_Num ) #Call the RL agent 
 
 if Test==False:
@@ -62,7 +62,7 @@ if Test==False:
             action = agent.choose_action(observation, evaluate)
 
             observation_, reward, done, Legal = env.step(action)                
-            if (np.round(observation_,3)==np.round(observation,3)).all()==True and done==False:
+            if (np.round(observation_,3)==np.round(observation,3)).all()==True and done==False and Legal:
                 #Check if the agent tried to take the same action back to back 
                 done=True
                 
