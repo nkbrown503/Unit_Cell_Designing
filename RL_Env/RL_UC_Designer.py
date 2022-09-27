@@ -34,7 +34,7 @@ args=parse_args()
 n_games = 10000 #Number of training Episodes
 
 figure_file = 'plots/UC_RL_Training.png'
-
+ 
 best_score = -10
 score_history = []
 Type='Tension'  #Change to either Tension or Compression depending on load type
@@ -117,7 +117,7 @@ else:
             action = agent.choose_action(observation, evaluate)
 
             observation_, reward, done, Legal = env.step(action)
-            if reward>LR or reward==-1 or reward<=LR:
+            if reward>LR or reward==-1:
                 score += reward
                 print(reward)
 
@@ -127,7 +127,6 @@ else:
                 observation = observation_
 
             else:
-                print('here')
                 env.state_UC=env.state_UC_
                 try:
                     env.Current_Force=env.Current_Force_

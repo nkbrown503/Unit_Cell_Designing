@@ -10,7 +10,7 @@ import numpy as np
 from gym import Env
 import copy 
 from gym.spaces import Discrete, Box
-
+import random
 import sys
 sys.path.insert(0,r'C:\Users\nbrow\OneDrive - Clemson University\Classwork\Doctorate Research\Python Coding\Unit_Cell_Design\VAE')
 from autoencoder import VAE, Autoencoder
@@ -167,7 +167,8 @@ class UC_Env(Env):
         self.state_UC[0,-1]=1
         self.state_UC[-1,-1]=1
         self.obs=np.zeros((59,)) #Top 11 Values are desired force response and bottom 48 are current latent space
-
+        if Test:
+            np.random.seed(random.randint(1,1000))
         Small=True
         while Small==True:
             #Depending on the load type, randomly pick a unit cell to try to design
@@ -176,6 +177,7 @@ class UC_Env(Env):
                 self.UC=np.random.choice(np.load('RL_Training_Set_C.npy'))
             else:
                 self.UC=np.random.randint(1,3100)
+            
             #----------Test cases----------------------------
             #self.UC=[1751,2433,1444,2402,941,1132,5843] #Softening
             #self.UC=[4115,985,4468] #stiffening
@@ -195,7 +197,7 @@ class UC_Env(Env):
             self.Desired_Force_Plot=copy.deepcopy(self.Desired_Force)
             self.Desired_Force_Plot[1:]=(self.Desired_Force_Plot[1:]*self.Force_stdev[1:])+self.Force_Mean[1:]
 
-            if self.Desired_Force_Plot[-1]>0.1 or Test==True:
+            if self.Desired_Force_Plot[-1]>0.1:
                 #Training yields better results with larger values
                 Small=False
         self.obs[:11]=np.reshape(self.Desired_Force,(11,))
