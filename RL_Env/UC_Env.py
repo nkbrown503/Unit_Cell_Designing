@@ -169,8 +169,8 @@ class UC_Env(Env):
         while Small==True:
             #Depending on the load type, randomly pick a unit cell to try to design
             if self.Type=='Compression':
-                self.UC=random.randint(1,6000)
-                #self.UC=random.choice(np.load('../Surrogate_Model/RL_Training_Set_C.npy'))
+                #self.UC=random.randint(1,6000)
+                self.UC=random.choice(np.load('../Surrogate_Model/RL_Training_Set_C.npy'))
             else:
                 self.UC=random.randint(1,3100)
             #----------Test cases----------------------------
@@ -184,9 +184,9 @@ class UC_Env(Env):
                 
             #Get the FD curve depending on the desired unit cell 
             if Type=='Compression':
-                self.Desired_Force=np.load('../ML_Output_Noise_Files/UC_Design_C_{}.npy'.format(self.UC))
+                self.Desired_Force=np.load('Compression_Force_Values.npy')[self.UC-1,:]
             elif Type=='Tension':
-                self.Desired_Force=np.load('../ML_Output_Noise_Files/UC_Design_T_{}.npy'.format(self.UC))
+                self.Desired_Force=np.load('Tension_Force_Values.npy')[self.UC-1,:]
 
 
             if Test==False:
