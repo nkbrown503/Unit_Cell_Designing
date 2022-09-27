@@ -173,7 +173,7 @@ class UC_Env(Env):
             #Depending on the load type, randomly pick a unit cell to try to design
             if self.Type=='Compression':
                 #self.UC=random.randint(1,6000)
-                self.UC=random.choice(np.load('../Surrogate_Model/RL_Training_Set_C.npy'))
+                self.UC=random.choice(np.load('RL_Training_Set_C.npy'))
             else:
                 self.UC=random.randint(1,3100)
             #----------Test cases----------------------------
