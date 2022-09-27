@@ -14,6 +14,7 @@ import tensorflow.keras as keras
 
 from tensorflow.keras.layers import Dense, LeakyReLU, ReLU
 tf.random.set_seed(1)
+np.random.seed(1)
 class CriticNetwork(keras.Model):
     def __init__(self, fc1_dims=256, fc2_dims=256,
             name='critic_'+'2', chkpt_dir='weights_48'):
@@ -25,11 +26,11 @@ class CriticNetwork(keras.Model):
         self.checkpoint_dir = chkpt_dir
         self.checkpoint_file = os.path.join(self.checkpoint_dir, 
                     self.model_name+'_ddpg')
-        self.fc0 = Dense(5096,activation='relu')
-        self.fc1 = Dense(2048,activation='relu')
-        self.fc2 = Dense(1024,activation='relu')
-        self.fc3 = Dense(512,activation='relu')
-        self.fc4 = Dense(256,activation='relu')
+        self.fc0 = Dense(2048,activation='relu')
+        self.fc1 = Dense(1024,activation='relu')
+        self.fc2 = Dense(512,activation='relu')
+        self.fc3 = Dense(256,activation='relu')
+        self.fc4 = Dense(128,activation='relu')
         #self.fc4 = Dense(32)
 
         self.q = Dense(1, activation=None)
@@ -61,11 +62,11 @@ class ActorNetwork(keras.Model):
         self.checkpoint_dir = chkpt_dir
         self.checkpoint_file = os.path.join(self.checkpoint_dir, 
                     self.model_name+'_ddpg')
-        self.fc0 = Dense(5096,activation='relu')
-        self.fc1 = Dense(2048,activation='relu')
-        self.fc2 = Dense(1024,activation='relu')
-        self.fc3 = Dense(512,activation='relu')
-        self.fc4 = Dense(256,activation='relu')
+        self.fc0 = Dense(2048,activation='relu')
+        self.fc1 = Dense(1024,activation='relu')
+        self.fc2 = Dense(512,activation='relu')
+        self.fc3 = Dense(256,activation='relu')
+        self.fc4 = Dense(128,activation='relu')
 
         self.mu = Dense(self.n_actions, activation='sigmoid')
 
