@@ -30,7 +30,10 @@ class UC_Env(Env):
         self.E_X=60
         self.Legal=False
         self.Type=Type
-        
+        if self.Type=='Compression':
+            self.Desired_Force_Set=np.load('Compression_Force_Values.npy')
+        elif self.Type=='Tension':
+            self.Desired_Force_Set=np.load('Tension_Force_Values.npy')
         #The following values are used to standardize the FD curves and/or the Latent Space 
         if self.Type=='Compression':
             self.Force_Mean=np.load('../Constant_Values/Force_Mean_Values.npy')
