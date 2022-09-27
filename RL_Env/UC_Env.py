@@ -10,7 +10,7 @@ import numpy as np
 from gym import Env
 import copy 
 from gym.spaces import Discrete, Box
-import random
+
 import sys
 sys.path.insert(0,r'C:\Users\nbrow\OneDrive - Clemson University\Classwork\Doctorate Research\Python Coding\Unit_Cell_Design\VAE')
 from autoencoder import VAE, Autoencoder
@@ -19,7 +19,7 @@ from Matrix_Transforms import isolate_largest_group_original
 from FCC_Surrogate_model import FCC_model
 import math
 import matplotlib.pyplot as plt 
-
+np.random.seed(1)
 
 class UC_Env(Env):
     def __init__(self,Type):
@@ -105,12 +105,12 @@ class UC_Env(Env):
             self.Perc_Error2=(np.max([abs((i-j)/i) for i,j in zip(self.Current_Force_Plot[4:],self.Desired_Force_Plot[4:])]))
             
 
-            Reward=np.max([-self.Perc_Error+1,-self.Perc_Error2+1,-1])
+            Reward=np.max([-self.Perc_Error,-self.Perc_Error2,-1])
 
             if self.Perc_Error<0.1 or self.Perc_Error2<0.1:
                 #If the percent error is less than 10% than the design is considered satisfactory 
                 Done=True
-                Reward+=(self.max_steps-self.step_count)
+                
             else: 
                 Done=False
 
@@ -172,10 +172,10 @@ class UC_Env(Env):
         while Small==True:
             #Depending on the load type, randomly pick a unit cell to try to design
             if self.Type=='Compression':
-                #self.UC=random.randint(1,6000)
-                self.UC=random.choice(np.load('RL_Training_Set_C.npy'))
+                #self.UC=np.random.randint(1,6000)
+                self.UC=np.random.choice(np.load('RL_Training_Set_C.npy'))
             else:
-                self.UC=random.randint(1,3100)
+                self.UC=np.random.randint(1,3100)
             #----------Test cases----------------------------
             #self.UC=[1751,2433,1444,2402,941,1132,5843] #Softening
             #self.UC=[4115,985,4468] #stiffening
