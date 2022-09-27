@@ -13,7 +13,7 @@ import tensorflow as tf
 import tensorflow.keras as keras
 
 from tensorflow.keras.layers import Dense, LeakyReLU, ReLU
-
+tf.random.set_seed(1234)
 class CriticNetwork(keras.Model):
     def __init__(self, fc1_dims=256, fc2_dims=256,
             name='critic_'+'2', chkpt_dir='weights_48'):
