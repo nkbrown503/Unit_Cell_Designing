@@ -16,7 +16,7 @@ from tensorflow.keras.layers import Dense, LeakyReLU, ReLU
 
 class CriticNetwork(keras.Model):
     def __init__(self, fc1_dims=256, fc2_dims=256,
-            name='critic_'+'2', chkpt_dir='weights_48_WaB'):
+            name='critic_'+'2', chkpt_dir='weights_48'):
         super(CriticNetwork, self).__init__()
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
@@ -51,7 +51,7 @@ class CriticNetwork(keras.Model):
 
 class ActorNetwork(keras.Model):
     def __init__(self, fc1_dims=256, fc2_dims=256, n_actions=7, name='actor_'+'2',
-            chkpt_dir='weights_48_WaB'):
+            chkpt_dir='weights_48'):
         super(ActorNetwork, self).__init__()
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
