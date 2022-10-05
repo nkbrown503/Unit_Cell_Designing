@@ -18,28 +18,6 @@ from tensorflow_addons.activations import mish
 from tensorflow.keras.losses import MeanSquaredError
 import numpy as np
 import tensorflow as tf
-def loss_func_SS(encoder_mu, encoder_log_variance):
-    def vae_reconstruction_loss(y_true, y_predict):
-        reconstruction_loss_factor = 1000
-        reconstruction_loss = K.mean(K.square(y_true-y_predict), axis=[1])
-        return reconstruction_loss_factor * reconstruction_loss
-
-    def vae_kl_loss(encoder_mu, encoder_log_variance):
-        kl_loss = -0.5 * K.sum(1.0 + encoder_log_variance - K.square(encoder_mu) - K.exp(encoder_log_variance), axis=1)
-        return kl_loss
-
-    def vae_kl_loss_metric(y_true, y_predict):
-        kl_loss = -0.5 * K.sum(1.0 + encoder_log_variance - K.square(encoder_mu) - K.exp(encoder_log_variance), axis=1)
-        return kl_loss
-
-    def vae_loss(y_true, y_predict):
-        reconstruction_loss = vae_reconstruction_loss(y_true, y_predict)
-        kl_loss = vae_kl_loss(y_true, y_predict)
-
-        loss = reconstruction_loss + kl_loss
-        return loss
-
-    return vae_loss
 
 
 def loss_func_auto():
@@ -52,7 +30,7 @@ def loss_func_auto():
 
 def loss_func(encoder_mu, encoder_log_variance):
         def vae_reconstruction_loss(y_true, y_predict):
-            reconstruction_loss_factor = 1000
+            reconstruction_loss_factor = 333
             reconstruction_loss = K.mean(K.square(y_true-y_predict), axis=[1, 2, 3])
             return reconstruction_loss_factor * reconstruction_loss
     
@@ -67,7 +45,7 @@ def loss_func(encoder_mu, encoder_log_variance):
         def vae_loss(y_true, y_predict):
             reconstruction_loss = vae_reconstruction_loss(y_true, y_predict)
             kl_loss = vae_kl_loss(y_true, y_predict)
-    
+
             loss = reconstruction_loss + kl_loss
             return loss
     
@@ -112,7 +90,7 @@ def VAE(y_size,x_size,num_channels,latent_space_dim):
         return random_sample
     
     encoder_output =Lambda(sampling, name="encoder_output")([encoder_mu, encoder_log_variance])
-    encoder_output=tanh(encoder_output)
+    #encoder_output = tanh(encoder_output)
     encoder =Model(x, encoder_output, name="encoder_model")
     
     decoder_input = Input(shape=(latent_space_dim), name="decoder_input")
@@ -129,9 +107,13 @@ def VAE(y_size,x_size,num_channels,latent_space_dim):
     decoder_conv_tran_layer3 = Conv2DTranspose(filters=64, kernel_size=(3, 3), padding="same", strides=2, name="decoder_conv_tran_3")(decoder_activ_layer2)
     decoder_norm_layer3 = BatchNormalization(name="decoder_norm_3")(decoder_conv_tran_layer3)
     decoder_activ_layer3 = ReLU()(decoder_norm_layer3)
+
+    decoder_conv_tran_layer4 = Conv2DTranspose(filters=32, kernel_size=(3, 3), padding="same", strides=1, name="decoder_conv_tran_4")(decoder_activ_layer3)
+    decoder_norm_layer4 = BatchNormalization(name="decoder_norm_4")(decoder_conv_tran_layer4)
+    decoder_activ_layer4 = ReLU()(decoder_norm_layer4)
     
-    decoder_conv_tran_layer4 =Conv2DTranspose(filters=1, kernel_size=(3, 3), padding="same", strides=1, name="decoder_conv_tran_4")(decoder_activ_layer3)
-    decoder_output = ReLU()(decoder_conv_tran_layer4 )
+    decoder_conv_tran_layer5 =Conv2DTranspose(filters=1, kernel_size=(3, 3), padding="same", strides=1, name="decoder_conv_tran_5")(decoder_activ_layer4)
+    decoder_output = ReLU()(decoder_conv_tran_layer5 )
     decoder = Model(decoder_input, decoder_output, name="decoder_model")
     
     vae_input = Input(shape=(y_size, x_size, num_channels), name="VAE_input")
@@ -189,9 +171,13 @@ def Autoencoder(y_size,x_size,num_channels,latent_space_dim):
     decoder_conv_tran_layer3 = Conv2DTranspose(filters=64, kernel_size=(3, 3), padding="same", strides=2, name="decoder_conv_tran_3")(decoder_activ_layer2)
     decoder_norm_layer3 = BatchNormalization(name="decoder_norm_3")(decoder_conv_tran_layer3)
     decoder_activ_layer3 = ReLU()(decoder_norm_layer3)
+ 
+    decoder_conv_tran_layer4 = Conv2DTranspose(filters=32, kernel_size=(3, 3), padding="same", strides=1, name="decoder_conv_tran_4")(decoder_activ_layer3)
+    decoder_norm_layer4 = BatchNormalization(name="decoder_norm_4")(decoder_conv_tran_layer4)
+    decoder_activ_layer4 = ReLU()(decoder_norm_layer4)
     
-    decoder_conv_tran_layer4 =Conv2DTranspose(filters=1, kernel_size=(3, 3), padding="same", strides=1, name="decoder_conv_tran_4")(decoder_activ_layer3)
-    decoder_output = ReLU()(decoder_conv_tran_layer4 )
+    decoder_conv_tran_layer5 =Conv2DTranspose(filters=1, kernel_size=(3, 3), padding="same", strides=1, name="decoder_conv_tran_5")(decoder_activ_layer4)
+    decoder_output = ReLU()(decoder_conv_tran_layer5 )
     decoder = Model(decoder_input, decoder_output, name="decoder_model")
     
     vae_input = Input(shape=(y_size, x_size, num_channels), name="VAE_input")
@@ -199,39 +185,3 @@ def Autoencoder(y_size,x_size,num_channels,latent_space_dim):
     vae_decoder_output = decoder(vae_encoder_output)
     ae = Model(vae_input, vae_decoder_output, name="VAE")
     return ae, encoder, decoder
-def VAE_SS_Curve(SS_Size,latent_size):
-
-    encoder_inputs = Input(shape=(SS_Size,))
-    t=Dense(128,activation='relu')(encoder_inputs)
-    t=Dense(81,activation='relu')(t)
-    t=Dense(64,activation='relu')(t)
-    t=Dense(16,activation='relu')(t)
-    encoder_mu = Dense(latent_size)(t)
-    encoder_log_variance =Dense(latent_size)(t)
-    
-    encoder_mu_log_variance_model = Model(encoder_inputs, (encoder_mu, encoder_log_variance))
-    
-    def sampling(mu_log_variance):
-        mu, log_variance = mu_log_variance
-        epsilon = K.random_normal(shape=K.shape(mu), mean=0.0, stddev=1.0)
-        random_sample = mu + K.exp(log_variance/2) * epsilon
-        return random_sample
-    
-    encoder_output =Lambda(sampling, name="encoder_output")([encoder_mu, encoder_log_variance])
-    #encoder_output=tanh(encoder_output)
-    encoder =Model(encoder_inputs, encoder_output, name="encoder_model")
-    
-    decoder_input=Input(shape=(latent_size,))
-    d=Dense(16,activation='relu')(decoder_input)
-    d=Dense(64,activation='relu')(d)
-    d=Dense(81,activation='relu')(d)
-    d=Dense(128,activation='relu')(d)
-    decoder_output=Dense(SS_Size,activation='relu')(d)
-    decoder=Model(decoder_input,decoder_output)
-    vae_input=Input(shape=(SS_Size,))
-    vae_encoder_output=encoder(vae_input)
-    vae_decoder_output=decoder(vae_encoder_output)
-    vae=Model(vae_input,vae_decoder_output)
-    return vae,encoder,decoder, encoder_mu,encoder_log_variance
-    
-    
