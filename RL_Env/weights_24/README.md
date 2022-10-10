@@ -1,1 +1,1 @@
-## The files with the saved weights is too large to include in this repo. You can train a new agent to the author of this repo, Nathn Brown (nkbrown@clemson.edu) can forward you the appropriate files.
+## The files with the saved weights is too large to include in this repo. You can train a new agent to the author of this repo, Nathan Brown (nkbrown@clemson.edu) can forward you the appropriate files.
