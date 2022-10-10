@@ -42,7 +42,7 @@ Type='Tension'  #Change to either Tension or Compression depending on load type
 
 Test=True #If Test=False then the RL agent will be trained from scratch
 env = UC_Env(Type) #Call the RL environment 
-agent = Agent(input_dims=(59,),Type=Type,alpha=args.learning_rate,beta=args.learning_rate,gamma=args.gamma,
+agent = Agent(input_dims=(35,),Type=Type,alpha=args.learning_rate,beta=args.learning_rate,gamma=args.gamma,
               env=env,Start_Noise=args.max_noise,Noise_Decay=args.noise_decay,n_actions=7,TN=args.Trial_Num ) #Call the RL agent 
 
 if Test==False:
@@ -125,6 +125,7 @@ else:
                     LR=reward
                     FE=env.Force_Error
                 observation = observation_
+                env.render(Legal,i)
 
             else:
                 env.state_UC=env.state_UC_
@@ -143,5 +144,5 @@ else:
             Avg_reward.append(LR)
         
 
-        #print('Average Final Error: {}'.format(np.mean(Avg_reward)))
+        print('Average Final Error: {}'.format(np.mean(Avg_reward)))
     

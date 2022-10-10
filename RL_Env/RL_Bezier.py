@@ -87,13 +87,11 @@ def RL_Bezier_Design(action,state_UC):
         Left_Bound=int(min(int((E_X)*Loc_X[0]),Thickness))
         Right_Bound=int(min(int((E_X)-((E_X)*Loc_X[0])),Thickness))
         UC_Hold=copy.deepcopy(state_UC)
-        if Choice==0:
-            state_UC[Remove_Y-Lower_Bound:Remove_Y+Upper_Bound,Remove_X-Left_Bound:Remove_X+Right_Bound]=1
-            Action_UC[Remove_Y-Lower_Bound:Remove_Y+Upper_Bound,Remove_X-Left_Bound:Remove_X+Right_Bound]=1
 
-        else:
-            state_UC[Remove_Y-Lower_Bound:Remove_Y+Upper_Bound+1,Remove_X-Left_Bound:Remove_X+Right_Bound+1]=1
-            Action_UC[Remove_Y-Lower_Bound:Remove_Y+Upper_Bound+1,Remove_X-Left_Bound:Remove_X+Right_Bound+1]=1
+        state_UC[Remove_Y-Lower_Bound:Remove_Y+Upper_Bound,Remove_X-Left_Bound:Remove_X+Right_Bound]=1
+        Action_UC[Remove_Y-Lower_Bound:Remove_Y+Upper_Bound,Remove_X-Left_Bound:Remove_X+Right_Bound]=1
+
+
         SingleCheck=isolate_largest_group_original(Action_UC)
         if SingleCheck[1]==False:
             state_UC[Remove_Y-1:Remove_Y+1,Remove_X-1:Remove_X+1]=1
