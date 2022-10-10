@@ -18,7 +18,7 @@ def custom_loss(y_true,y_pred):
     return loss
 def FCC_model():
 
-    inputs = Input(shape=(48,))
+    inputs = Input(shape=(24,))
     t= Dense(256)(inputs)
     t=ReLU()(t)
     t=BatchNormalization()(t)
