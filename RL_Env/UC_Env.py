@@ -104,7 +104,7 @@ class UC_Env(Env):
             if self.Perc_Error<0.075 or self.Perc_Error2<0.075:
                 #If the percent error is less than 10% than the design is considered satisfactory 
                 Done=True
-                Reward=1-np.max([-self.Perc_Error,-self.Perc_Error2])
+                Reward=1+np.max([-self.Perc_Error,-self.Perc_Error2])
                 
             else: 
                 Done=False
