@@ -34,8 +34,12 @@ class UC_Env(Env):
         self.Type=Type
         if self.Type=='Compression':
             self.Desired_Force_Set=np.load('../Surrogate_Model/Surrogate_Model_Normalized_Force_C_Data.npy')
+            self.Force_Mean=np.load('../Surrogate_Model/Force_Mean_C.npy')
+            self.Force_Stdev=np.load('../Surrogate_Model/Force_Stdev_C.npy')
         elif self.Type=='Tension':
             self.Desired_Force_Set=np.load('../Surrogate_Model/Surrogate_Model_Normalized_Force_T_Data.npy')
+            self.Force_Mean=np.load('../Surrogate_Model/Force_Mean_T.npy')
+            self.Force_Stdev=np.load('../Surrogate_Model/Force_Stdev_T.npy')
         #The following values are used to standardize the FD curves and/or the Latent Space 
 
         #Import the Autoencoder needed to define the latent space of each unit cell
@@ -91,15 +95,16 @@ class UC_Env(Env):
 
             #Compare the error between the Desired FD and the True FD 
             self.Force_Error=(np.max([abs((i-j)) for i,j in zip(self.Current_Force[1:],self.Desired_Force[1:])]))
-            self.Perc_Error=(np.max([abs((i-j)/j) for i,j in zip(self.Current_Force[4:],self.Desired_Force[4:])]))
-            self.Perc_Error2=(np.max([abs((i-j)/i) for i,j in zip(self.Current_Force[4:],self.Desired_Force[4:])]))
+            self.Perc_Error=(np.max([abs((i-j)/j) for i,j in zip(self.Current_Force[4:],self.Desired_Force[3:])]))
+            self.Perc_Error2=(np.max([abs((i-j)/i) for i,j in zip(self.Current_Force[4:],self.Desired_Force[3:])]))
             
 
             Reward=np.max([-self.Perc_Error,-self.Perc_Error2,-1])
 
-            if self.Perc_Error<0.1 or self.Perc_Error2<0.1:
+            if self.Perc_Error<0.075 or self.Perc_Error2<0.075:
                 #If the percent error is less than 10% than the design is considered satisfactory 
                 Done=True
+                Reward=1-np.max([-self.Perc_Error,-self.Perc_Error2])
                 
             else: 
                 Done=False
@@ -169,15 +174,12 @@ class UC_Env(Env):
             #Get the FD curve depending on the desired unit cell 
             self.Desired_Force=self.Desired_Force_Set[self.UC,:]
 
-            if Test==False:
-                #Add noise to the desired FD curve during training 
-                self.Desired_Force[1:]+=np.random.uniform(low=-.1,high=.1,size=10)
 
             if self.Desired_Force[-1]>0.05:
                 #Training yields better results with larger values
                 Small=False
         self.obs[:11]=np.reshape(self.Desired_Force,(11,))
-
+        self.obs[1:11]=(self.obs[1:11]-self.Force_Mean[1:])/self.Force_Stdev[1:]
         return self.obs
     
         
